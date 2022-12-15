@@ -25,15 +25,16 @@ print "part 1 result: ", scalar keys %visited, "\n";
 # so keep track of 2 locations.  They take turns moving, but still based on
 # the same set of instructions.
 
-my @locs = ( 0x80008000, 0x80008000 );
+my @loc = ( 0x80008000, 0x80008000 );
 # reset the visited map
 %visited = ( 0x80008000 => 1 );
 my $idx = 0;  # will flip between 0 and 1
 
 # loop through each char
 for my $c (split //, $moves) {
+  next if !exists $dirs{$c};
   # move to next location
-  $loc[$idx] += $dirs{$c} if exists $dirs{$c};
+  $loc[$idx] += $dirs{$c};
   # mark this location
   $visited{$loc[$idx]} = 1;
   

@@ -30,3 +30,17 @@ part 2 result: 2342
 ...and something's wrong; 2342 is too high. Trying a couple of the provided
 examples, I get a wrong answer for "^>v<"; should be 3 but my program
 returns 4.
+
+Turned out I had a typo ("locs" instead of "loc") and so it was using 0,0 as
+the origin instead of 0x8000, 0x8000.  Fixing that solved the problem.
+
+```
+jmminch@hex  ~/git/advent/2015/day03
+$ echo "^>v<" | perl day3.pl 
+part 1 result: 4
+part 2 result: 3
+jmminch@hex  ~/git/advent/2015/day03
+$ perl day3.pl < input.txt 
+part 1 result: 2081
+part 2 result: 2341
+```
