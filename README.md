@@ -25,3 +25,7 @@ I usually write my solutions in Perl.  Typically the directories look like:
 |-- 2016
 ...
 ```
+
+Most of the solutions expect to receive their input data from standard
+input. Occasionally there are other parameters that will be read from the
+command line.
