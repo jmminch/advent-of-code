@@ -16,8 +16,8 @@ one that starts with 5 zeroes.
 The puzzle input is given to day4.pl as a parameter rather than being
 received from stdin.
 
-test data provided:
-abcdef should result in 609043
+test data provided:\
+abcdef should result in 609043\
 pqrstuv => 1048970
 
 ```
