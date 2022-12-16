@@ -28,3 +28,20 @@ where all the rest generated no more than a few. So the next thing I tried
 with that input is to display the states of the registers -- and it is,
 indeed, repeating. Since the register states are repeating, that should be
 my answer (and it is).
+
+Although that completes the challenge (no part 2 for day 25), I wanted to
+implement the logic to actually check for the repeating state in code. I did
+that by just concatenating the values of the 4 registers into a string and
+using that as a key for a hash to track whether I've see various states or
+not.
+
+If there were multiple out instructions, I would have had to include the
+instruction pointer in the state. If the expected results were longer than a
+2-value loop I probably would have needed to track where I was in that loop
+too.
+
+```
+$ perl day25.pl < input.txt 
+result: 196
+```
+

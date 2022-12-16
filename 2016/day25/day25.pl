@@ -5,10 +5,14 @@ $input = shift // 7;
 
 my $input = 1;
 while(1) {
-  print "Testing $input... \n";
+  #print "Testing $input... \n";
   %reg = ( a=>$input, b=>0, c=>0, d=>0 );
   my $out = run();
-  print "$out correct values generated.\n";
+  #print "$out correct values generated.\n";
+  if($out == -1) {
+    print "result: $input\n";
+    exit 0;
+  }
   $input++;
 }
 
@@ -27,6 +31,8 @@ sub get {
 sub run {
   my $expected = 0; # We're expecting a 0 to start.
   my $outcount = 0; # count of how many output values generated.
+
+  my %stateCache = ( );
 
   my $ip = 0; # instruction pointer
   while($ip >= 0 && $ip <= $#inst) { # program halts when $ip goes out of range.
@@ -91,8 +97,14 @@ sub run {
         return $outcount;
       }
 
-      print "$reg{a} $reg{b} $reg{c} $reg{d}\n";
-
+      # find out whether this state has repeated. The state is the four
+      # registers; we would need to include the instruction pointer too but
+      # there's only a single out opcode in the input program.
+      my $state = "$reg{a}.$reg{b}.$reg{c}.$reg{d}";
+      if(exists $stateCache{$state}) {
+        return -1;
+      }
+      $stateCache{$state} = 1;
     }
 
     $ip++;
