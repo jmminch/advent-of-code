@@ -7,15 +7,16 @@ object is to release maximum amount of pressure within the time constraints.
 
 The result for the test data should be 1651.
 
-
 This problem looks ideal for depth-first processing; since the maximum path
 length is only 30 it shouldn't grow out of control. Some simple pruning we
 could do:
-  1 - don't backtrack if you haven't opened a valve, since that's a
-      pointless waste of time.
-  2 - don't try to open valves with rate=0
-  3 - if all nonzero valves are open, just wait for the end
 
+1. don't backtrack if you haven't opened a valve, since that's a pointless
+waste of time.
+2. don't try to open valves with rate=0
+3. if all nonzero valves are open, just wait for the end
+
+I didn't end up taking this approach, though.
 
 This problem can be solved with an approach similar to 2016 day 24 (which I
 happen to remember since I recently did it.) The solution should be to take
