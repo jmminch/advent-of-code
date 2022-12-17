@@ -30,8 +30,12 @@ sub droprock {
     $pos--;
   }
 
+  my $steps = 0;
+
   # move the rock until it can't move down.
   while(1) {
+
+    $steps++;
     
     # get the next horizontal motion
     my $h = substr $input, $ip, 1;
@@ -95,6 +99,8 @@ sub droprock {
   }
 
   $nRock++;
+
+  return $steps;
 }
 
 # start by dropping 1000 rocks to get any pattern started.
