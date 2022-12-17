@@ -1,6 +1,6 @@
 # Day 17: Pyroclastic Flow
 
-(This problem)[https://adventofcode.com/2022/day/17] is a physical
+[This problem](https://adventofcode.com/2022/day/17) is a physical
 simulation with fairly complicated rules---five different shapes of objects
 that interact with the rocks that have already fallen into place.
 
