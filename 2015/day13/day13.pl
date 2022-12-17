@@ -17,6 +17,18 @@ permute(\@people, 0);
 
 print "part 1 result: $total\n";
 
+push @people, 'myself';
+
+# don't need to make changes to the rules table since lookups for an entry
+# that doesn't exist will just return undef which is equivalent to 0 when
+# adding.
+
+$total = -999999;
+
+permute(\@people, 0);
+
+print "part 2 result: $total\n";
+
 # cribbed from day09.pl
 sub permute {
   my ($list, $idx) = @_;
@@ -46,15 +58,3 @@ sub permute {
     }
   }
 }
-
-# don't need to initialize it since any lookups for an entry that don't
-# exist will just return undef which is equivalent to 0 when adding.
-$rules{'myself'} = {};
-
-push @people, 'myself';
-
-$total = -999999;
-
-permute(\@people, 0);
-
-print "part 2 result: $total\n";
