@@ -33,3 +33,28 @@ that the first atom in the product (in my input, 'C') must be produced by
 a sequence of actions on the first atom.  So maybe the thing to do is look
 at the possible ways to generate the first atom, then move on to the next,
 etc.
+
+After giving it some time, I got thinking about whether I could go backwards
+instead of forward. I instead wrote a "decompose" function that starts with
+the target molecule, and applies the transformations backwards, starting
+with trying the longest first (to eliminate as many atoms as possible as
+quickly as possible). It still doesn't finish the search in a reasonable
+time; however, it does find three potential solutions fairly quickly, each
+with steps = 212. I decided to assume that the earliest ones it found are
+most likely the shortest, and submitted that as my answer, which was
+correct.
+
+Still kind of unsatisfying, though.
+
+```
+$ perl day19-2.pl < input.txt 
+found path, len = 212
+found path, len = 212
+CRnCaCaCaCaCaCaCaCaCaSiRnFYFArCaCaCaCaFArThSiThCaCaCaF
+CRnCaCaCaCaCaCaPTiRnPRnCaFArFArCaCaCaFArAl
+CRnCaCaCaCaCaCaCaSiRnFYFArPTiRnPRnCaFArFArCaCaFArThCaCaCaCaCaF
+CRnCaCaCaCaCaCaCaCaSiRnCaFYFArCaPRnCaFArCaCaCaCaFArThCaCaCaCaCaF
+CRnCaCaCaCaCaCaPBPRnPRnFArFArCaCaCaCaFArAl
+CRnCaCaCaCaCaCaCaCaSiRnFYFArPBPRnPRnFArFArFArThSiAl
+^C
+```

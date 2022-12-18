@@ -1,6 +1,8 @@
 use Data::Dumper;
+use List::Util qw(min);
 
-# read the input file.
+# read the input file. For part 2, I am going to work backwards, so create a
+# table of product => atom.
 while(<>) {
   chomp;
   if(/(\w+) => (\w+)/) {
@@ -8,59 +10,78 @@ while(<>) {
     my $atom = $1;
     my $product = $2;
 
-    my $productList = [ ];
-    while(length $product) {
-      $product =~ s/^([A-Z][a-z]?)//;
-      push @$productList, $1;
-    }
-
-    push @{$replace{$atom}}, $productList;
+    push @{$replace{$product}}, $atom;
   } elsif(/\w/) {
     # this is the molecule to be processed
     $molecule = $_;
   }
 }
 
-# split the molecule into atoms.
-my @molecule;
-while(length $molecule) {
-  $molecule =~ s/^([A-Z][a-z]?)//;
-  push @molecule, $1;
-}
+$minLen = 9999999;
+my @path = ();
+my $result = decompose($molecule, \@path);
+print "part 2 result: $result\n";
 
-my $atoms = [ 'e' ];
+sub getProducts {
+  # loop through every replaceable atom, and replace it with every possible
+  # replacement.
+  my $mol = $_[0];
+  my %products = ();
 
-my $steps = createMolecule($atoms, 0, \@molecule, 0);
+  for my $atom (keys %replace) {
 
-print "part 2 result: $steps\n";
+    while($mol =~ /$atom/g) {
+      for my $out (@{$replace{$atom}}) {
+        my $tmp = $mol;
+        substr($tmp, $-[0], length($atom), $out);
 
-sub createMolecule {
-  my ($atoms, $idx, $target, $depth) = @_;
+        # make a hash out of the produced molecules.
+        $products{$tmp} = 1;
+      }
+    }
 
-  my $minSteps = 1 << 32;
-
-  print "$idx $depth\n";
-
-  return -1 if length(@$atoms) > length(@$target);
-
-  # if the correct atom is present, first try just moving to the next atom.
-  if($atoms->[$idx] eq $target->[$idx]) {
-    return 0 if $idx == $#$target;
-
-    my $r = createMolecule($atoms, $idx + 1, $target, $depth + 1);
-    $minSteps = $r if $r >= 0;
-    return $r if $r >= 0;
   }
 
-  # for each possible substitution for atoms->[idx], make the substitution
-  # and then call createMolecule again.
-  for $sub (@{$replace{$atoms->[$idx]}}) {
-    my $tmpAtoms = [ @{$atoms} ];
-    splice @$tmpAtoms, $idx, 1, @$sub;
-    my $r = createMolecule($tmpAtoms, $idx, $target, $depth + 1);
-    return ($r + 1) if $r >= 0;
-  }
-
-  return -1;
+  return keys %products;
 }
 
+# This sub tries each possible substitution in order, and then calls
+# decompose on the result; after trying them all it returns 1 + the minimum
+# return value.
+#
+# If the input is the target, 'e', then return 0.
+# If the input contains 'e', then it's invalid. Return a huge number.
+#
+
+sub decompose {
+  my $molecule = $_[0];
+  my $path = $_[1];
+
+  $counter++;
+  print "$molecule\n" if(($counter & 0xFFFF) == 0);
+
+  if($molecule eq 'e') {
+    print "found path, len = ", scalar @$path, "\n";
+    $minLen = scalar @$path if scalar(@$path) < $minLen;
+    return 0;
+  }
+  #return 0 if $molecule eq 'e';
+  return 9999999 if index($molecule, 'e') > -1;
+  return 9999999 if scalar(@$path) > $minLen;
+
+  return $cache{$molecule} if exists $cache{$molecule};
+
+  # If I don't sort the keys, then the order changes whenever I change the
+  # program, which makes comparing the results when I make changes hard.
+  my @products = getProducts($molecule);
+  @products = sort { length $a <=> $b } @products;
+
+  push @$path, $molecule;
+
+  my $min = min(map { decompose($_, $path) } @products);
+  $cache{$molecule} = $min + 1;
+
+  pop @$path;
+
+  return $min + 1;
+}
