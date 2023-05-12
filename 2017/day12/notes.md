@@ -37,3 +37,18 @@ $ perl day12.pl < input.txt
 Part 1 result: 141
 Part 2 result: 171
 ```
+
+I decided to make it a little more efficient by having a hash that tracks
+the group associated with each node. It does add some overhead when
+combining groups because I have to update that hash for all nodes that are
+changing groups, but it saves a lot of the work.
+
+```
+$ time perl day12.pl < input.txt 
+Part 1 result: 141
+Part 2 result: 171
+
+real	0m0.016s
+user	0m0.011s
+sys	0m0.005s
+```
