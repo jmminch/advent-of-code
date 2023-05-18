@@ -13,6 +13,8 @@ for my $room (@rooms) {
 
 print "Part 1 result: $part1\n";
 
+# The checksum of the name is the 5 most common letters (a-z) in the name,
+# in order of commonality; with ties broken alphabetically.
 sub checksum {
   my $name = $_[0];
   my @counts;
@@ -35,6 +37,8 @@ sub checksum {
     return $a->[0] cmp $b->[0];
   } @counts;
 
+  # generate the checksum by concatenating the letters for the first five
+  # elements of @sorted.
   my $cksum;
   for my $i (0..4) {
     $cksum .= $sorted[$i]->[0];
