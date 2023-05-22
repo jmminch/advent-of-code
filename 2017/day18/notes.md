@@ -17,6 +17,11 @@ we switch to the other program until it does, etc. The object of part 2 is
 to run until there is a deadlock (both programs waiting to receive another
 value).
 
+To determine if there is a deadlock, I just need to check if no instructions
+were run before getting to a "rcv" instruction. Since the only way to start
+one program is if the other one was waiting to receive a value, if no
+progress is made on this program, then it must be deadlocked.
+
 ```
 $ perl day18.pl < input.txt 
 Part 1 result: 9423

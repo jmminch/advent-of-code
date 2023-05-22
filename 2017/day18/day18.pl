@@ -15,6 +15,8 @@ run(\%statePt1);
 
 print "Part 1 result: $statePt1{sndFreq}\n";
 
+# For part 2, run them, alternating, until there is a deadlock. The
+# return value from run is the number of instructions performed.
 while(1) {
   run(\%state0);
   last if run(\%state1) == 0; # no instructions performed; must be deadlocked.
@@ -69,6 +71,8 @@ sub run {
   return $instCount;
 }
 
+# If the parameter is a letter, then return the value of the register;
+# otherwise return the value itself.
 sub getReg {
   return int(($_[1] =~ /[a-z]/) ? $_[0]->{$_[1]} : $_[1]);
 }
