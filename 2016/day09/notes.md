@@ -15,3 +15,9 @@ The relationship of the two problems is interesting in that that obvious way
 to solve part one---by decoding the string and getting the length---is
 actually harder than just calculating the length without actually generating
 the decoded string. That becomes obvious when you start working on part 2.
+
+```
+$ perl day09.pl < input.txt 
+Part 1 result: 70186
+Part 2 result: 10915059201
+```
