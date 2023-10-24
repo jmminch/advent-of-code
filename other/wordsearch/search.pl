@@ -16,7 +16,13 @@ print "Result: $result\n";
 
 sub genGrid {
   my ($width, $height, $words) = @_;
-  my $grid = { width => $width, height => $height };
+  
+  # Grid structure:
+  # elem 0: width
+  # elem 1: height
+  # elem 2: array containing characters
+  # elem 3: array containing counts
+  my $grid = [ $width, $height, [ ], [ ] ];
 
   my $result = placeWords($grid, $words, 0);
 
@@ -31,10 +37,9 @@ sub placeWords {
   return 1 if $wordIdx > $#words;
 
   # try all possible positions for this word
-  for(my $y = 0; $y < $grid->{height}; $y++) {
-    for(my $x = 0; $x < $grid->{width}; $x++) {
+  for(my $y = 0; $y < $grid->[0]; $y++) {
+    for(my $x = 0; $x < $grid->[1]; $x++) {
       for(my $dir = 0; $dir < 8; $dir++) {
-        print "$wordIdx $x $y $dir\n" if $wordIdx < 3;
         if(placeWord($grid, $x, $y, $words[$wordIdx], $dir)) {
           return 1 if placeWords($grid, $words, $wordIdx + 1);
           delWord($grid, $x, $y, $words[$wordIdx], $dir);
@@ -49,25 +54,29 @@ sub placeWords {
 # Get the character at x,y; '.' if nothing
 sub getAt {
   my ($grid, $x, $y) = @_;
-  return '.' if !exists $grid->{"$x.$y"};
-  return $grid->{"$x.$y"}->[0];
+  my $elem = $y * $grid->[0] + $x;
+  return '.' if $grid->[3]->[$elem] < 1;
+  return $grid->[2]->[$elem];
 }
 
 # Set the character at x,y; increment its counter
 sub setAt {
   my ($grid, $x, $y, $c) = @_;
-  $grid->{"$x.$y"} = [ $c, 0 ] if !exists $grid->{"$x.$y"};
-  $grid->{"$x.$y"}->[1]++;
+  my $elem = $y * $grid->[0] + $x;
+  $grid->[2]->[$elem] = $c;
+  $grid->[3]->[$elem]++;
 }
 
-# Decrement the counter at x,y and delete the entry if the counter is 0
+# Decrement the counter at x,y
 sub delAt {
   my ($grid, $x, $y) = @_;
-  $grid->{"$x.$y"}->[1]--;
-  delete $grid->{"$x.$y"} if !$grid->{"$x.$y"}->[1];
+  my $elem = $y * $grid->[0] + $x;
+  $grid->[3]->[$elem]--;
 }
 
 sub placeWord {
+  $counter++;
+  die if $counter > 1000000;
   my ($grid, $sx, $sy, $word, $dir) = @_;
   my @dirs = (
     [-1,-1], [-1,0], [-1,1],
@@ -78,7 +87,7 @@ sub placeWord {
   for(my $i = 0; $i < length $word; $i++) {
     my $x = $sx + $i * $dirs[$dir]->[0];
     my $y = $sy + $i * $dirs[$dir]->[1];
-    return 0 if $x < 0 || $y < 0 || $x >= $grid->{width} || $y >= $grid->{height};
+    return 0 if $x < 0 || $y < 0 || $x >= $grid->[0] || $y >= $grid->[1];
     my $c = getAt($grid, $x, $y);
     return 0 if $c ne '.' && $c ne substr($word, $i, 1);
   }
@@ -108,8 +117,8 @@ sub delWord {
 
 sub printGrid {
   my $grid = $_[0];
-  for(my $y = 0; $y < $grid->{height}; $y++) {
-    for(my $x = 0; $x < $grid->{width}; $x++) {
+  for(my $y = 0; $y < $grid->[0]; $y++) {
+    for(my $x = 0; $x < $grid->[1]; $x++) {
       print getAt($grid, $x, $y);
     }
     print "\n";

@@ -43,4 +43,16 @@ First optimization: try to use a more efficient data structure for the grid.
 I'll use two arrays of size (width * height); the first will contain the
 character at (x,y) and the second will contain the count. Since I
 implemented a getter and setter for getting grid elements from the
-beginning, changing the structure is pretty easy.
+beginning, changing the structure is pretty easy. Turns out that this
+doesn't really have a very significant impact (about 7% improvement).
+
+A couple of observations that might make things quicker:
+
+- If there is a solution, then it can be rotated/reflected in any way. I can
+  cut a bunch of possibilities by limiting the placement directions of the
+  first word. In the case of a square grid, placing it in one orthogonal
+  direction and one diagonal direction (so left-to-right, and top-left to
+  bottom-right) would be sufficient. For a non-square grid, the
+  top-to-bottom direction would be required too.
+- I spend a lot of time trying to place words in a direction that goes off
+  the edge of the board. Optimizing that would probably help.
