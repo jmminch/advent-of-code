@@ -31,4 +31,14 @@ Thinking about it, the simple approach of first replacing all instances of
 wrong. So instead I will go through the string character-by-character from
 the beginning, looking at whether there is a digit (numerical or spelled) at
 that character. Then I'll reverse the string and do the same to find the
-last digit.
+last digit. This corresponds to the approach that decodes the above as `72`.
+
+```
+$ perl day01.pl < input.txt 
+Part 1 result: 53651
+Part 2 result: 53894
+```
+
+Interesting that this problem is really significantly more difficult than
+the early problems from years past.
+
