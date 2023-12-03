@@ -29,3 +29,21 @@ Again, this is a pretty tough problem for this early in the month.
 $ perl day03.pl < input.txt 
 Part 1 result: 525911
 ```
+
+For part 2, I need to find the numbers that are adjacent to all "gears" (`*`
+symbols.) The code I've written isn't well-suited to solve that directly,
+but since I'm already finding symbols next to each number, what I will do is
+keep track of gears whenever I find a `*` symbol, and then add the number I
+find to a list associated with that gear. Then I can process the list of
+gears at the end to solve part 2.
+
+I get the right answer with my solution for the test input, but the site
+says my result is too low for the actual input.
+
+```
+$ perl day03.pl < input.txt 
+Part 1 result: 525911
+Part 2 result: 75476845
+```
+
+Since it's too low, that suggests I'm missing at least one valid gear.
