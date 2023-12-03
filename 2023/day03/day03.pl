@@ -47,7 +47,7 @@ for my $y (0..$#schema) {
             if($c eq '*') {
               # Using a hash so that we only end up with a single instance
               # of each unique gear location.
-              $gearList{($y + $delta->[0]) . ($x + $delta->[1])} = 1;
+              $gearList{($y + $delta->[0]) . ',' . ($x + $delta->[1])} = 1;
             }
           }
         }

@@ -47,3 +47,15 @@ Part 2 result: 75476845
 ```
 
 Since it's too low, that suggests I'm missing at least one valid gear.
+
+To figure out what's going wrong, I'm going to change the code to remove all
+found gears from the input, and print it back out. Then I can look at the
+result manually to see if I can identify which gear isn't being correctly
+counted.
+
+While I was writing that, I found the mistake---a silly error. When
+recording the positions of found gears in a hash, I am indexing the hash
+with a string version of the coordinates. I was intending to use "$y,$x",
+but accidentally used simply "$y$x" without a comma. That resulted in some
+unique locations mapping to the same index---for instance, (12,1) would be
+the same as (1,21). After fixing that I get the right result.
