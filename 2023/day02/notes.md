@@ -14,3 +14,11 @@ until I know what part 2 will look like.
 Turns out that there's no need to parse the sets for part 2 either; instead
 we are looking for the maximum value for each color on the line, and then
 multiplying those together.
+
+```
+$ perl day02.pl < input.txt 
+Part 1 result: 2913
+Part 2 result: 55593
+```
+
+This problem was far simpler than yesterday's.
