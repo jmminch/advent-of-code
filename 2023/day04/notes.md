@@ -16,3 +16,13 @@ For part 2, the matching logic is the same, but scoring is different. This
 looks like a problem looking for a recursive solution, since the question of
 how many points one card is worth depends on how much others are worth. The
 'Memoize' module should be helpful here.
+
+```
+$ perl day04.pl < input.txt 
+Part 1 result: 24542
+Part 2 result: 8736438
+```
+
+Just for fun, I tried it without using Memoize to see what the difference
+is; without that enabled it took about 3 seconds to complete, while with it
+enabled it took about 20 milliseconds.
