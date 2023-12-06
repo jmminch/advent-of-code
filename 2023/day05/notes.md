@@ -62,3 +62,13 @@ values. That way I can process large numbers of inputs at once. I could also
 do some logic to coelesce multiple ranges into one if they are
 adjacent/overlapping, although I suspect that doing so isn't actually
 necessary. I'll tackle doing that tomorrow.
+
+```
+$ perl  day05.pl < input.txt 
+Part 1 result: 31599214
+Part 2 result: 20358599
+```
+
+It ran fast enough without making any attempt to coalesce adjoining ranges.
+I'm not terribly happy with my implementation of the "apply map"
+function--it's pretty ugly--but it does work.
