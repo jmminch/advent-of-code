@@ -5,7 +5,7 @@ use List::Util qw(max);
 my $threshold = shift // 10000;
 
 # Read the list of points. Determine the boundaries at the same time.
-my @points;
+our @points;
 my $minX = 9e100;
 my $minY = 9e100;
 my $maxX = -9e100;
@@ -23,6 +23,30 @@ while(<>) {
 
 # Grow the boundary by one square
 $minX--; $minY--; $maxX++; $maxY++;
+
+# The boundary may not contain all cells required for part 2. Go through the
+# edges and determine the total distance to all cells. If it's less than the
+# threshold, then move the edge back. See notes for details.
+for my $y ($minY..$maxY) {
+  my (undef, undef, $totalDist) = distances($minX, $y);
+  if($totalDist < $threshold) {
+    $minX -= int(($threshold - $totalDist) / scalar(@points)) + 1;
+  }
+  (undef, undef, $totalDist) = distances($maxX, $y);
+  if($totalDist < $threshold) {
+    $maxX += int(($threshold - $totalDist) / scalar(@points)) + 1;
+  }
+}
+for my $x ($minX..$maxX) {
+  my (undef, undef, $totalDist) = distances($x, $minY);
+  if($totalDist < $threshold) {
+    $minY -= int(($threshold - $totalDist) / scalar(@points)) + 1;
+  }
+  (undef, undef, $totalDist) = distances($x, $maxY);
+  if($totalDist < $threshold) {
+    $maxY += int(($threshold - $totalDist) / scalar(@points)) + 1;
+  }
+}
 
 # Iterate through all cells within the bounding rectangle and determine:
 # 1. Which point is this cell closest to. Track the size of the region for
@@ -73,3 +97,23 @@ for my $x ($minX..$maxX) {
 printf "Part 1 result: %d\n", max(values %regions);
 
 print "Part 2 result: $part2\n";
+
+sub distances {
+  my ($x, $y) = @_;
+  my $totalDist = 0;
+  my $minDist = 9e100;
+  my $minPoint = -1;
+  for my $i (0..$#points) {
+    my $p = $points[$i];
+    my $dist = abs($p->[0] - $x) + abs($p->[1] - $y);
+    $totalDist += $dist;
+    if($dist < $minDist) {
+      $minDist = $dist;
+      $minPoint = $i;
+    } elsif($dist == $minDist) {
+      $minPoint = -1; # Used to indicate no "closest" point
+    }
+  }
+
+  return ($minPoint, $minDist, $totalDist);
+}

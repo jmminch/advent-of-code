@@ -32,8 +32,7 @@ Part 2 result: 49327
 
 This is the right answer, but there could potentially be an issue, because
 it's theoretically possible for points outside the bounding box to be within
-the threshold total distance from all points. At some future point I might
-want to revisit this problem to solve that.
+the threshold total distance from all points.
 
 One approach might be to check whether cells in the part 2 set are on the
 boundary, and if they are, then grow the area. Every step outside the area
@@ -41,3 +40,26 @@ will increase the total distance by the number of points, so if a point on
 the edge is 100 units below the threshold, then we could move the boundary
 out `100 units / n points`; do that on all edges and then there shouldn't be
 any cells on the boundary less than the threshold.
+
+Implementing this approach appears to work; running with the test set with
+the threshold set to 10,000 gives an answer which at least seems reasonable.
+Since the test points are all close together compared to the threshold, and
+there are 6 points, I would expect the set of points with total distance
+less than 10,000 to be a diamond shape that extends 1666 units (`10000 / 6`)
+in each direction. The bounding square would be 1.1e7 units in area, and the
+diamond area should be about 5.6e6 units in area.
+
+```
+$ perl day06.pl < test 
+Part 1 result: 17
+Part 2 result: 5554416
+```
+
+So that's in my estimated ballpark.  It's a little slow to run (takes about
+20 seconds on my system), but since the "real" input only takes about 1
+second to run I don't think it's worth trying to optimize.
+
+Doing a little experimentation to determine at what threshold this logic
+would be required, it turns out that it would be for my input if the
+threshold was set around 10,300. So it's actually potentially pretty
+reasonable that with another set of input points this logic might be needed.
