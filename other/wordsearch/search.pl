@@ -10,7 +10,7 @@ while(<>) {
 # Sort in reverse order of length
 @words = sort { length($b) <=> length($a) } @words;
 
-my $result = genGrid(9, 9, \@words);
+my $result = genGrid(10, 10, \@words);
 
 print "Result: $result\n";
 
@@ -75,19 +75,21 @@ sub delAt {
 }
 
 sub placeWord {
-  $counter++;
-  die if $counter > 1000000;
   my ($grid, $sx, $sy, $word, $dir) = @_;
   my @dirs = (
     [-1,-1], [-1,0], [-1,1],
     [-1,0],          [1,0],
     [-1,1],  [1,0],  [1,1] );
+  my $l = length($word);
+
+  my $ex = $sx + ($l - 1) * $dirs[$dir]->[0];
+  my $ey = $sy + ($l - 1) * $dirs[$dir]->[1];
+  return 0 if $ex < 0 || $ey < 0 || $ex >= $grid->[0] || $ey >= $grid->[1];
 
   # check if the word fits
   for(my $i = 0; $i < length $word; $i++) {
     my $x = $sx + $i * $dirs[$dir]->[0];
     my $y = $sy + $i * $dirs[$dir]->[1];
-    return 0 if $x < 0 || $y < 0 || $x >= $grid->[0] || $y >= $grid->[1];
     my $c = getAt($grid, $x, $y);
     return 0 if $c ne '.' && $c ne substr($word, $i, 1);
   }
