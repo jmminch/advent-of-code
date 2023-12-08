@@ -56,3 +56,33 @@ A couple of observations that might make things quicker:
   top-to-bottom direction would be required too.
 - I spend a lot of time trying to place words in a direction that goes off
   the edge of the board. Optimizing that would probably help.
+
+Even fixing those still resulted in my test "christmas" list taking a very
+long time trying to fit the words into a 9x9 grid. I assumed that there
+probably wasn't a configuration that would work; however to make this
+problem work I need to be able to verify that. Lacking any other really good
+ideas for optimization, I re-implemented basically the same algorithm in C.
+I was surprised to find that there is a solution for a 9x9 grid after all:
+
+```
+$ time ./search < christmas 
+STAR.HMCF
+TFENORIAI
+OIELGESNR
+CGLWFETDE
+KYDRSDLYP
+IBNEANECL
+NEAANITAA
+GLCTTEONC
+.L.HAREEE
+Result: 1
+
+real	0m7.556s
+user	0m7.547s
+sys	0m0.001s
+```
+
+Since there are 9-letter words, an 8x8 arrangement is impossible, although a
+9x8 arrangement would be theoretically possible. The C version of the
+program quickly finds that 8x8 doesn't work, but it has to run for a while
+to check all possibilities for the 9x8 grid.
