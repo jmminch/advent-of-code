@@ -19,6 +19,10 @@ while(<>) {
   $y++;
 }
 
+# Get sorted lists of the rows/columns that contain galaxies
+my @filledRows = sort { $a <=> $b } keys %filledRows;
+my @filledCols = sort { $a <=> $b } keys %filledCols;
+
 # Find the distance between each pair of galaxies
 my $totalDist = 0;
 my $totalDist2 = 0; # for part 2
@@ -29,26 +33,29 @@ for my $i (0..$#galaxies) {
     # manhattan distance
     my $dist = abs($y1-$y2) + abs($x1-$x2);
     my $dist2 = $dist;
+    
     # add in the number of rows and cols between the two
+    
     # note y1 is always <= y2 because of the order we read the input
-    for my $y (($y1+1)..($y2-1)) {
-      if(!exists $filledRows{$y}) {
-        $dist++;
-        $dist2 += 999999;
-      }
-    }
+    my $yIdx1 = bsearch(\@filledRows, $y1);
+    my $yIdx2 = bsearch(\@filledRows, $y2);
 
+    # the number of rows *missing* between y1, y2 is
+    # (y2-y1) - (yIdx2-yIdx1)
+    $dist += ($y2 - $y1) - ($yIdx2 - $yIdx1);
+    $dist2 += 999999 * (($y2 - $y1) - ($yIdx2 - $yIdx1));
+
+    # swap x1/x2 if necessary
     if($x2 < $x1) {
       my $tmp = $x2;
       $x2 = $x1;
       $x1 = $tmp;
     }
-    for my $x (($x1+1)..($x2-1)) {
-      if(!exists $filledCols{$x}) {
-        $dist++;
-        $dist2 += 999999;
-      }
-    }
+    my $xIdx1 = bsearch(\@filledCols, $x1);
+    my $xIdx2 = bsearch(\@filledCols, $x2);
+    $dist += ($x2 - $x1) - ($xIdx2 - $xIdx1);
+    $dist2 += 999999 * (($x2 - $x1) - ($xIdx2 - $xIdx1));
+
     $totalDist += $dist;
     $totalDist2 += $dist2;
   }
@@ -56,3 +63,20 @@ for my $i (0..$#galaxies) {
 
 print "Part 1 result: $totalDist\n";
 print "Part 2 result: $totalDist2\n";
+
+# note that $value must be in @$array
+sub bsearch {
+  my ($array, $value) = @_;
+
+  my $x0 = 0;
+  my $x1 = $#$array;
+
+  while(1) {
+    return $x0 if $value == $array->[$x0];
+    return $x1 if $value == $array->[$x1];
+    my $m = int(($x0 + $x1) / 2);
+    return $m if $value == $array->[$m];
+    $x0 = $m + 1 if $value > $array->[$m];
+    $x1 = $m - 1 if $value < $array->[$m];
+  }
+}

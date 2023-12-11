@@ -52,3 +52,8 @@ Part 2 result: 519939907614
 I'm actually a little disappointed in part 2...I was expecting something
 like the universe expanding while travelling between the galaxies, which may
 have gotten interesting.
+
+I made the change described above to count the expanding rows/columns by
+finding indexes into a list, but it's actually no faster than my first
+implementation interating through all the possible lines. That kind of
+surprises me.
