@@ -1,18 +1,33 @@
 use strict vars;
 
-# Read input into an array
-my @input;
+my $part1 = 0;
+my $part2 = 0;
+
 while(<>) {
-  push @input, [ (substr $_, 0, index($_, ' ')), [ ] ];
-  push @{$input[-1]->[1]}, $& while /\d+/g;
+  my $inpLine = [ (substr $_, 0, index($_, ' ')), [ ] ];
+  push @{$inpLine->[1]}, $& while /\d+/g;
+  $part1 += countPoss(@$inpLine);
+
+  # modify the data according to part 2 rules
+  $inpLine->[0] = ($inpLine->[0] . '?') x 5;
+  # get rid of trailing '?'
+  substr($inpLine->[0], -1, 1) = '';
+  $inpLine->[1] = [ ( @{$inpLine->[1]} ) x 5 ];
+
+  $part2 += countPoss(@$inpLine);
 }
 
-my $count = 0;
-for my $inpLine (@input) {
-  $count += countPoss(@$inpLine);
-}
+print "Part 1 result: $part1\n";
+print "Part 2 result: $part2\n";
 
-print "Part 1 result: $count\n";
+# Create a new copy of the input data and modify according to the part 2
+# rules.
+my @input2;
+for my $inpLine (@input2) {
+  push @input2, [ ($inpLine->[0] . '?') x 5, [ @{$inpLine->[1]} x 5 ] ];
+  # get rid of the trailing '?'
+  substr($input2[-1]->[0], -1, 1) = '';
+}
 
 sub countPoss {
   my ($str, $groups) = @_;
@@ -37,6 +52,13 @@ sub countPoss {
       $count++ if(matchGroups(\@guesses, $groups, $gp, 1));
       $gp--;
       next;
+    } else {
+      # See if the current guesses could possibly be a solution, and back up
+      # if not.
+      if(!matchGroups(\@guesses, $groups, $gp, 0)) {
+        $gp--;
+        next;
+      }
     }
 
     $guesses[$gp]++;
@@ -73,6 +95,15 @@ sub matchGroups {
     }
   }
 
+  if(!$end) {
+    # Partial group matching mode. If there is an unclosed group, just check
+    # that the group value is at least as large as the current group.
+    return 0 if $groups->[$groupIdx] < $group;
+    return 1;
+  }
+
+  # Full matching mode. Last group size needs to match, and we need to have
+  # used all the groups.
   if($group > 0) {
     return 0 if $groups->[$groupIdx] != $group;
     $groupIdx++;
