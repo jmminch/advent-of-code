@@ -116,3 +116,29 @@ version to use 64-bit integers. After line 9, we end up overflowing the
 It's progressing, but still not fast enough to be reasonable. There are 1000
 lines in the input, and after several minutes it's only processed a couple
 dozen.
+
+I think maybe I could use memoization to improve on this. If we have
+something like `??.??.?? 1,1,1` I end up having to recalculate all the
+possibilities for the trailing `??.??` twice. That could (almost certainly
+does) turn out to be a big time sink with the longer lines.
+
+To do that, I need to redefine my algorithm in terms of a recursive
+function. I'll have a function that takes the strings, groups, and a
+starting string position and group index, and returns the number of
+possibilities. The function will try all possibilities for the group index
+and sum up the results.
+
+The memoization cache will need to be cleared every time we start a new
+string.
+
+Finally I was successful:
+
+```
+$ time ./day12-2 < input 
+Part 1 result: 7163
+Part 2 result: 17788038834112
+
+real	0m1.087s
+user	0m1.078s
+sys	0m0.004s
+```
