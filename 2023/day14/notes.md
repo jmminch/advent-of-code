@@ -72,4 +72,56 @@ This detects the cycle in the input starting with cycle 101.
 $ perl day14.pl < input 
 Part 1 result: 109424
 Part 2 result: 102509
+
+real	0m1.821s
+user	0m1.770s
+sys	0m0.049s
+```
+
+One thing that bothered me about my solution is the "tilt" function
+essentially repeats its logic four times, one for each direction.
+I'm really opposed to having code that is largely duplicated multiple times,
+as it makes maintenance of that code much more difficult.
+
+I had thought about doing a sequence of rotating the board so that the
+direction that the boulders are moving is at the top, moving all the
+boulders towards the top, and then rotating it back. That would simplify the
+code, but it adds a bunch of extra processing to the problem which would
+make it much slower, so that doesn't seem like a good plan.
+
+Another way that would reduce the impact is to use the fact that a "spin
+cycle" can be implemented by moving all boulders towards the top and then
+rotating clockwise by 90°, repeating that procedure four times. At least
+that would eliminate half of the rotation steps.
+
+However, as I considered that, I realized that I could instead have a
+function that maps the coordinates used by the tilt function into a
+different coordinate system based on the rotation. So we would have:
+
+```
+dir=0 (up)    x => x, y => y
+dir=1 (left)  x => ymax - y, y => x
+dir=2 (down)  x => xmax - x, y => ymax - y
+dir=3 (right) x => y, y => xmax - x
+```
+
+So I can write the tilt function logic as if it's always moving boulders up,
+but write a mapX and mapY function to convert into the correct coordinate
+system.
+
+At the same time I will change to code to modify the map in-place rather
+than cloning it every time, which should get me an extra speedup--hopefully
+enough to offset the extra work in doing the coordinate mapping, which
+should be pretty fast but is still going to represent a slowdown.
+
+After making the change, unfortunately performance is significantly worse:
+
+```
+$ time perl day14-2.pl < input
+Part 1 result: 109424
+Part 2 result: 102509
+
+real	0m4.248s
+user	0m4.229s
+sys	0m0.012s
 ```
