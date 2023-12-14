@@ -44,3 +44,32 @@ load values repeat every 9 cycles. `(1e9 - 419) % 9 = 5`, so the result
 should be the same as in cycle 424; 102509.
 
 I will attack finding the cycle programmatically later.
+
+My usual method to find a cycle in values like this is to have a hash, with
+the index based on the state (in this case, the grid), and the values being
+the step number when that state was encountered. So after a step, if the
+current state already exists in the hash, then the cycle length is the
+difference between the current step number and the one stored in the hash.
+
+There's a couple things I could used to index the state. The "load value"
+isn't good enough, since we can see from the data above that we frequently
+hit the same load values multiple times during a cycle (since there are
+multiple load values that correspond to the same state.) One thing that
+should work would be to remember the last n load values (say, twenty or so)
+and use that as the state; the chances of that many load values repeating
+for different states are very low.
+
+Another possibility would be to convert the map into a string and use that
+as the key; or perhaps a hash of that string. I could map it to a bit string
+where the `O` blocks are 1 and the other cells 0; since the input map is
+100x100 that would result in 10,000 bits or 1,250 bytes. That's pretty long,
+but it looks like I only need to store a few hundred at the most. This is
+the option I'm going to try.
+
+This detects the cycle in the input starting with cycle 101.
+
+```
+$ perl day14.pl < input 
+Part 1 result: 109424
+Part 2 result: 102509
+```

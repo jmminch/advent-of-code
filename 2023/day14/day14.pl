@@ -10,32 +10,39 @@ my $r = tiltMap(\@map, 0);
 
 printf "Part 1 result: %d\n", load($r);
 
-my $lastLoad = 0;
-my $sameLoadCount = 0;
+$r = dclone(\@map);
+my %cache = ( );
 my $cycle = 0;
 
-$r = dclone(\@map);
+while(1) {
 
-while($sameLoadCount < 100) {
   # spin cycle
   for my $i (0..3) {
     $r = tiltMap($r, $i);
   }
-
-  my $load = load($r);
-  if($load == $lastLoad) {
-    $sameLoadCount++;
-  } else {
-    $lastLoad = $load;
-    $sameLoadCount = 0;
-  }
-
   $cycle++;
 
-  print "$cycle $lastLoad\n";
+  my $c = compress($r);
+  if(exists $cache{$c}) {
+    # Found a cycle
+    my $cycleLen = $cycle - $cache{$c};
+    my $extraSteps = (1e9 - $cycle) % $cycleLen;
+
+    # Do enough extra cycles so that the state will match the state after
+    # cycle 1,000,000,000
+    for my $i (1..$extraSteps) {
+      for my $i (0..3) {
+        $r = tiltMap($r, $i);
+      }
+    }
+
+    last;
+  } else {
+    $cache{$c} = $cycle;
+  }
 }
 
-print "Part 2 result: $lastLoad\n";
+printf "Part 2 result: %d\n", load($r);
 
 sub tiltMap {
   my ($map, $dir) = @_;
@@ -150,3 +157,26 @@ sub load {
   return $load;
 }
 
+# Convert map into a compressed bit string representation
+sub compress {
+  my $map = $_[0];
+  my $r = "";
+  my $byte = 0;
+  my $bit = 1;
+
+  for my $y (0..$#$map) {
+    for my $ch (@{$map->[$y]}) {
+      $byte |= $bit if $ch eq 'O';
+      if($bit == 0x80) {
+        $r .= chr($byte);
+        $byte = 0;
+        $bit = 1;
+      } else {
+        $bit <<= 1;
+      }
+    }
+  }
+
+  $r .= chr($byte) if $bit != 1;
+  return $r;
+}
