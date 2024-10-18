@@ -60,3 +60,29 @@ real	0m1.050s
 user	0m0.906s
 sys	0m0.144s
 ```
+
+A different idea: what if I implement it as a ring, but keep pointers to the
+elf "directly across" as well as the one whose turn it is. I first discarded
+that idea because it wasn't obvious to me that the elf directly across would
+change predictably, but maybe that's wrong.
+
+If there are an even number of elves (`n`) in the circle, then the one
+directly across from an elf is `n/2` steps away. If there is an odd number
+of elves in the circle, then the one directly across is `int(n/2)` steps
+away.
+
+That means that, if the length of the list is even, then after removing the
+"elf across the circle", the new elf across the circle will be the one prior
+to the one just removed. If the length of the list is odd, then the new elf
+across the circle will be the one after the one removed. This should
+actually be pretty easy... to bad I didn't realize this first.
+
+```
+$ time ./day19-2 
+Part 1 result: 1834471
+Part 2 result: 1420064
+
+real	0m0.095s
+user	0m0.076s
+sys	0m0.020s
+```
