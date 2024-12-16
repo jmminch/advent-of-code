@@ -22,7 +22,7 @@ my $endPtr = ($#fileList << 8) | ($fileList[$#fileList] - 1);
 my $empty = 0;
 my $ckSum = 0;
 
-LOOP: while($startPtr <= $endPtr) {
+LOOP: while($startPtr <= $endPtr && $diskPtr <= $#map) {
   for my $i (1..$map[$diskPtr]) {
 
     if($empty) {
