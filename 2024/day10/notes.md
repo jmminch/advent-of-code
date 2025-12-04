@@ -20,3 +20,15 @@ $ perl day10.pl input
 Part 1 result: 468
 Part 2 result: 966
 ```
+
+I originally just copy/pasted the part 1 logic and altered it for part 2,
+but later went back and changed it so that I just ran the part 2 logic
+(returning a list of all peaks, with duplicates when there are multiple
+paths to a peak,) and then filter out the duplicates to get the part 1
+answer. It's slightly faster, but not by much.
+
+I originally did the memoization of the code manually, as I wasn't sure
+whether the Memoize module would handle returning arrays. I tried it with
+the Memoize module, and it works, although it does take measurably longer to
+complete. (That said, it's still only in the 10-20 ms range total, so it's
+not a significant time.)

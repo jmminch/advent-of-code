@@ -16,10 +16,11 @@ for my $y (0..$h - 1) {
   for my $x (0..$w - 1) {
     my $loc = (($y + 256) << 16) | ($x + 256);
     if(getAt($loc) == 0) {
-      my @peaks = reachablePeaks($loc);
-      $part1 += scalar @peaks;
-      @peaks = reachablePeaks2($loc);
+      my @peaks = reachablePeaks2($loc);
       $part2 += scalar @peaks;
+      my %uniquePeaks = ();
+      for my $peak (@peaks) { $uniquePeaks{$peak} = 1; }
+      $part1 += scalar keys %uniquePeaks;
     }
   }
 }
@@ -33,31 +34,6 @@ sub getAt {
   my $y = ($loc >> 16) - 256;
   return -1 if $x < 0 || $x >= $w || $y < 0 || $y >= $h;
   return $map[$y]->[$x];
-}
-
-our %rpCache;
-sub reachablePeaks {
-  my $loc = $_[0];
-  my $h = getAt($loc);
-
-  return $loc if $h == 9;
-  return @{$rpCache{$loc}} if exists $rpCache{$loc};
-
-  my %peaks;
-  my @dirs = (-65536, 65536, -1, 1);
-  for my $d (@dirs) {
-    my $h2 = getAt($loc + $d);
-    if($h2 == $h + 1) {
-      my @l = reachablePeaks($loc + $d);
-      for my $p (@l) {
-        $peaks{$p} = 1;
-      }
-    }
-  }
-
-  my @peaks = keys %peaks;
-  $rpCache{$loc} = \@peaks;
-  return @peaks;
 }
 
 our %rp2Cache;
