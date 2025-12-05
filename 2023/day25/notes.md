@@ -54,3 +54,18 @@ real	1m23.304s
 user	1m23.292s
 sys	0m0.004s
 ```
+
+When looking back over my solution, I realized that there is an easy
+optimization of the algorithm that is specific to this problem. We know that
+the minimum cut is three edges; and thus, if any two nodes are connected by
+more than three edges, those two must be merged as part of the final
+solution if a 3-edge cut is to be found. So instead of picking completely
+randomly, I choose a random node, and then check if it has more than 3
+connections to any other node. If it does, then I pick those two to merge.
+
+Doing 50 test runs, usually this takes less than 10 iterations to find a
+solution, with a max of 37 iterations. With my original algorithm, averages
+are much higher, and the max I saw over 50 runs took 623 iterations.
+
+The run on the original algorithm took 5m59s for 50 runs, while the revised
+algorithm took 22.4s, for a speedup of about 16x.

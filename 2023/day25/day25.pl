@@ -17,12 +17,15 @@ while(<>) {
   }
 }
 
+my $iterations = 1;
 while(1) {
   my ($edges, $size1, $size2) = findCut(\%graph);
   if($edges == 3) {
     printf "Part 1 result: %d\n", $size1 * $size2;
+    #print "iterations = $iterations\n";
     last;
   }
+  $iterations++;
 }
 
 sub findCut {
@@ -38,8 +41,21 @@ sub findCut {
     # Pick a random node 
     my $node = (keys %graph)[rand keys %graph];
 
-    # Now pick a random node that it's connected to to merge into.
-    my $node2 = ((keys %{$graph{$node}})[rand keys %{$graph{$node}}]);
+    # If any of the edges attached to this node have a weight of more than
+    # 3, then a valid solution requires merging them -- so pick that
+    # attached node to merge.
+    my $node2 = undef;
+    for my $x (keys %{$graph{$node}}) {
+      if($graph{$node}->{$x} > 3) {
+        $node2 = $x;
+        last;
+      }
+    }
+
+    if(!defined $node2) {
+      # Now pick a random node that it's connected to to merge into.
+      $node2 = ((keys %{$graph{$node}})[rand keys %{$graph{$node}}]);
+    }
 
     # Move all of the other edges attached to $node to $node2.
     for my $x (keys %{$graph{$node}}) {
